@@ -16,13 +16,11 @@ let map = L.map("map", {
 
 // thematische Layer
 let themaLayer = {
-    kampThayaMarch: L.featureGroup(),
-    piestingtal: L.featureGroup(),
-    thayarunde: L.featureGroup(),
-    traisental: L.featureGroup(),
-    triestingGoelsental: L.featureGroup(),
-    triestingau: L.featureGroup(),
-    ybbstal: L.featureGroup(),
+    jubilaeum: L.featureGroup(),
+    rosalia: L.featureGroup(),
+    paradies: L.featureGroup(),
+    ironCurtain: L.featureGroup(),
+    festival: L.featureGroup(),
     badeseen: L.featureGroup(),
 }
 
@@ -33,13 +31,11 @@ let eGrundkarteNiederoesterreich = L.control.layers({
     "OpenTopoMap": L.tileLayer.provider("OpenTopoMap"),
     "CycleTrails": L.tileLayer.provider("CyclOSM"),
 }, {
-    "Kamp-Thaya-March-Radweg": themaLayer.kampThayaMarch.addTo(map),
-    "Piestingtal-Radweg": themaLayer.piestingtal.addTo(map),
-    "Thayarunde": themaLayer.thayarunde.addTo(map),
-    "Traisental-Radweg": themaLayer.traisental.addTo(map),
-    "Triesting-Gölsental-Radweg": themaLayer.triestingGoelsental.addTo(map),
-    "Triestingau-Radweg": themaLayer.triestingau.addTo(map),
-    "Ybbstal-Radweg": themaLayer.ybbstal.addTo(map),
+    "Jubiläumsradweg": themaLayer.jubilaeum.addTo(map),
+    "Rosalia-Radweg": themaLayer.rosalia.addTo(map),
+    "Paradies-Radweg": themaLayer.paradies.addTo(map),
+    "Iron-Curtain-Trail": themaLayer.ironCurtain.addTo(map),
+    "Festival-Radweg": themaLayer.festival.addTo(map),
     "Badeseen": themaLayer.badeseen,
 }).addTo(map);
 
@@ -129,7 +125,7 @@ for (let stadt of STAEDTE) {
     let marker = L.marker([stadt.lat, stadt.lng])
         .addTo(map)
         .bindPopup(`${stadt.title} <br>
-    <a href="${stop.wikipedia}">Wikipedia</a>
+    <a href="${stadt.wikipedia}">Wikipedia</a>
     `)
 };
 
