@@ -23,9 +23,7 @@ let themaLayer = {
     triestingGoelsental: L.featureGroup(),
     triestingau: L.featureGroup(),
     ybbstal: L.featureGroup(),
-    eurovelo6: L.featureGroup(),
-    eurovelo9: L.featureGroup(),
-    eurovelo13: L.featureGroup(),
+    badeseen: L.featureGroup(),
 }
 
 // Hintergrundlayer 
@@ -42,9 +40,7 @@ let eGrundkarteNiederoesterreich = L.control.layers({
     "Triesting-Gölsental-Radweg": themaLayer.triestingGoelsental.addTo(map),
     "Triestingau-Radweg": themaLayer.triestingau.addTo(map),
     "Ybbstal-Radweg": themaLayer.ybbstal.addTo(map),
-    "Eurovelo-Radweg Nr. 6": themaLayer.eurovelo6.addTo(map),
-    "Eurovelo-Radweg Nr. 9": themaLayer.eurovelo9.addTo(map),
-    "Eurovelo-Radweg Nr. 13": themaLayer.eurovelo13.addTo(map),
+    "Badeseen": themaLayer.badeseen,
 }).addTo(map);
 
 
@@ -100,48 +96,31 @@ new L.GPX(gpx, { async: true }).on('loaded', function (e) {
     //   map.fitBounds(e.target.getBounds());
 }).addTo(themaLayer.ybbstal);
 
-var gpx = './data/eurovelo6.gpx';
-new L.GPX(gpx, { async: true }).on('loaded', function (e) {
-    //   map.fitBounds(e.target.getBounds());
-}).addTo(themaLayer.eurovelo6);
-
-var gpx = './data/eurovelo9.gpx';
-new L.GPX(gpx, { async: true }).on('loaded', function (e) {
-    //   map.fitBounds(e.target.getBounds());
-}).addTo(themaLayer.eurovelo9);
-
-var gpx = './data/eurovelo13.gpx';
-new L.GPX(gpx, { async: true }).on('loaded', function (e) {
-    //   map.fitBounds(e.target.getBounds());
-}).addTo(themaLayer.eurovelo13);
-
-//Eurovelos erscheinen noch nicht
-
 // Marker der größten Städte
 const STAEDTE = [
     {
-        title: "St. Pölten, Niederösterreich",
-        lat: 48.18735,
-        lng: 15.64139,
-        wikipedia: "https://de.wikipedia.org/wiki/St._P%C3%B6lten"//Links raus oder anpassen?
-    },
-    {
-        title: "Tulln",
-        lat: 48.33001133291213,
-        lng: 16.060959034595086,
-        wikipedia: "https://de.wikipedia.org/wiki/Wien" //Links raus oder anpassen?
-    },
-    {
-        title: "Krems a.d. Donau",
-        lat: 48.41022698533108,
-        lng: 15.60382006192799,
+        title: "Eisenstadt",
+        lat: 47.84651920035177,
+        lng: 16.52731717127831,
         wikipedia: "https://de.wikipedia.org/wiki/Eisenstadt"//Links raus oder anpassen?
     },
     {
-        title: "Baden bei Wien",
-        lat: 48.0024595018188,
-        lng: 16.230795040395048,
-        wikipedia: "https://de.wikipedia.org/wiki/Eisenstadt"//Links raus oder anpassen?
+        title: "Neusiedl am See",
+        lat: 47.94831935218377,
+        lng: 16.850801413360713,
+        wikipedia: "https://de.wikipedia.org/wiki/Neusiedl_am_See" //Links raus oder anpassen?
+    },
+    {
+        title: "Oberwart",
+        lat:47.29477213220548,
+        lng: 16.200854006181853,
+        wikipedia: "https://de.wikipedia.org/wiki/Oberwart"//Links raus oder anpassen?
+    },
+    {
+        title: "Pinkafeld",
+        lat: 47.374107766607914,
+        lng: 16.123038801200657,
+        wikipedia: "https://de.wikipedia.org/wiki/Pinkafeld"//Links raus oder anpassen?
     },
 ]
 
@@ -151,6 +130,48 @@ for (let stadt of STAEDTE) {
         .addTo(map)
         .bindPopup(`${stadt.title} <br>
     <a href="${stop.wikipedia}">Wikipedia</a>
+    `)
+};
+
+//Badeseen
+const BADESEEN = [
+    {
+        title: "Neusiedler See", 
+        lat: 47.861670077756585,
+        lng: 16.766234356776703
+    },
+    {
+        title: "Römersee", 
+        lat: 47.76228947258584,
+        lng: 16.346584741278356
+    },
+    {
+        title: "Badeparadies Burg", 
+        lat: 47.21698496322752,
+        lng: 16.41073338918724
+    },
+    {
+        title: "Naturbadesee Königsdorf", 
+        lat: 47.00899491536701,
+        lng: 16.16288813573165
+    },
+    {
+        title: "Sonnensee Ritzing", 
+        lat: 47.63005232247246, 
+        lng: 16.470865861482007
+    }
+];
+
+for (let badeseen of BADESEEN) {
+    L.marker([badeseen.lat, badeseen.lng], {
+        icon: L.icon({
+            iconUrl: `icons/swimming.png`,
+            popupAnchor: [0, -37],
+            iconAnchor: [16, 37],
+        })
+    })
+        .addTo(themaLayer.badeseen)
+        .bindPopup(`<b>${badeseen.title}</b> <br>
     `)
 };
 
