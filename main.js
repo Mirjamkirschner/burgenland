@@ -39,29 +39,141 @@ let eGrundkarteNiederoesterreich = L.control.layers({
     "Badeseen": themaLayer.badeseen,
 }).addTo(map);
 
-
-var gpx = './data/rosalia.gpx';
-new L.GPX(gpx, { async: true }, {
-    //Polylinien stylen funktioniert noch nicht, marker ausschalten auch nicht
-    polyline_options: [{
-        color: `#76eec6`,
+//Festival-Radweg
+var gpx = './data/festival.gpx';
+let festival = new L.GPX(gpx, {
+    polyline_options: {
+        color: '#FFFACD',
         opacity: 0.75,
         weight: 3
-    }, {
-        color: `#76eec6`,
-        opacity: 0.75,
-        weight: 3
-    }]
-}, {
+    },
     marker_options: {
         startIconUrl: "icons/tab_cycle.png",
         endIconUrl: false,
         shadowUrl: false,
         wptIconUrls: false
+    }
+}).addTo(themaLayer.festival);
+// GPX Track visualisieren aus https://raruto.github.io/leaflet-elevation/
+festival.on("click", function (evt) {
+    let controlElevation = L.control.elevation({
+        time: false,
+        elevationDiv: "#profile",
+        height: 300,
+        theme: "festival"
+    }).addTo(map);
+    // Load track from url (allowed data types: "*.geojson", "*.gpx", "*.tcx")
+    controlElevation.load("./data/festival.gpx")
+});
+
+//Iron-Curtain-Radweg
+var gpx = './data/ironCurta.gpx';
+let ironCurtain = new L.GPX(gpx, {
+    polyline_options: {
+        color: '#FFFACD',
+        opacity: 0.75,
+        weight: 3
     },
-}).on('loaded', function (e) {
-    //   map.fitBounds(e.target.getBounds());
+    marker_options: {
+        startIconUrl: "icons/tab_cycle.png",
+        endIconUrl: false,
+        shadowUrl: false,
+        wptIconUrls: false
+    }
+}).addTo(themaLayer.ironCurtain);
+// GPX Track visualisieren aus https://raruto.github.io/leaflet-elevation/
+ironCurtain.on("click", function (evt) {
+    let controlElevation = L.control.elevation({
+        time: false,
+        elevationDiv: "#profile",
+        height: 300,
+        theme: "ironCurtain"
+    }).addTo(map);
+    // Load track from url (allowed data types: "*.geojson", "*.gpx", "*.tcx")
+    controlElevation.load("./data/ironCurtain.gpx")
+});
+
+//Jubiläum-Radweg
+var gpx = './data/jubilaeum.gpx';
+let jubilaeum = new L.GPX(gpx, {
+    polyline_options: {
+        color: '#FFFACD',
+        opacity: 0.75,
+        weight: 3
+    },
+    marker_options: {
+        startIconUrl: "icons/tab_cycle.png",
+        endIconUrl: false,
+        shadowUrl: false,
+        wptIconUrls: false
+    }
+}).addTo(themaLayer.jubilaeum);
+// GPX Track visualisieren aus https://raruto.github.io/leaflet-elevation/
+jubilaeum.on("click", function (evt) {
+    let controlElevation = L.control.elevation({
+        time: false,
+        elevationDiv: "#profile",
+        height: 300,
+        theme: "jubilaeum"
+    }).addTo(map);
+    // Load track from url (allowed data types: "*.geojson", "*.gpx", "*.tcx")
+    controlElevation.load("./data/jubilaeum.gpx")
+});
+
+//Paradies-Radweg
+var gpx = './data/paradies.gpx';
+let paradies = new L.GPX(gpx, {
+    polyline_options: {
+        color: '#FFFACD',
+        opacity: 0.75,
+        weight: 3
+    },
+    marker_options: {
+        startIconUrl: "icons/tab_cycle.png",
+        endIconUrl: false,
+        shadowUrl: false,
+        wptIconUrls: false
+    }
+}).addTo(themaLayer.paradies);
+// GPX Track visualisieren aus https://raruto.github.io/leaflet-elevation/
+paradies.on("click", function (evt) {
+    let controlElevation = L.control.elevation({
+        time: false,
+        elevationDiv: "#profile",
+        height: 300,
+        theme: "jubilaeum"
+    }).addTo(map);
+    // Load track from url (allowed data types: "*.geojson", "*.gpx", "*.tcx")
+    controlElevation.load("./data/paradies.gpx")
+});
+
+//Jubiläum-Radweg
+var gpx = './data/rosalia.gpx';
+let rosalia = new L.GPX(gpx, {
+    polyline_options: {
+        color: '#FFFACD',
+        opacity: 0.75,
+        weight: 3
+    },
+    marker_options: {
+        startIconUrl: "icons/tab_cycle.png",
+        endIconUrl: false,
+        shadowUrl: false,
+        wptIconUrls: false
+    }
 }).addTo(themaLayer.rosalia);
+// GPX Track visualisieren aus https://raruto.github.io/leaflet-elevation/
+rosalia.on("click", function (evt) {
+    let controlElevation = L.control.elevation({
+        time: false,
+        elevationDiv: "#profile",
+        height: 300,
+        theme: "rosalia"
+    }).addTo(map);
+    // Load track from url (allowed data types: "*.geojson", "*.gpx", "*.tcx")
+    controlElevation.load("./data/rosalia.gpx")
+});
+
 
 var gpx = './data/festival.gpx';
 new L.GPX(gpx, { async: true }, {
