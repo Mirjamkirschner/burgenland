@@ -1,5 +1,3 @@
-/* Code von Burgenland mobile Beispiel */
-
 // Zentrum Karte Objekt
 let stpolten = {
     lat: 48.33001133291213,
@@ -12,7 +10,7 @@ let map = L.map("map", {
     fullscreenControl: true
 }).setView([
     stpolten.lat, stpolten.lng
-], 7.5);
+], 8.5);
 
 // thematische Layer
 let themaLayer = {
@@ -21,14 +19,16 @@ let themaLayer = {
     ironCurtain: L.featureGroup(),
     paradies: L.featureGroup(),
     jubilaeum: L.featureGroup(),
+    forecast: L.featureGroup(),
     badeseen: L.featureGroup(),
 }
 
+
+
 // Hintergrundlayer 
-//noch den schöneren von der Hauptkarte einfügen, wenn wir das geschafft haben 
 let eGrundkarteNiederoesterreich = L.control.layers({
-    "OpenStreetMap": L.tileLayer.provider("OpenStreetMap.DE").addTo(map),
-    "OpenTopoMap": L.tileLayer.provider("OpenTopoMap"),
+    "BasemapÖsterreich": L.tileLayer.provider("BasemapAT.grau").addTo(map),
+    "StamenB/W": L.tileLayer.provider("Stamen.TonerLite"),
     "CycleTrails": L.tileLayer.provider("CyclOSM"),
 }, {
     "Rosalia-Radweg": themaLayer.rosalia.addTo(map),
@@ -36,14 +36,85 @@ let eGrundkarteNiederoesterreich = L.control.layers({
     "Iron-Curtain-Radweg": themaLayer.ironCurtain.addTo(map),
     "Paradies-Radweg": themaLayer.paradies.addTo(map),
     "Jubiläum-Radweg": themaLayer.jubilaeum.addTo(map),
+    "Wettervorhersage MET Norwag": themaLayer.forecast,
     "Badeseen": themaLayer.badeseen,
 }).addTo(map);
+
+// Instanz Leaflet MiniMap
+var miniMap = new L.Control.MiniMap(
+    L.tileLayer.provider("BasemapAT.basemap"), {
+    toggleDisplay: true,
+    minimized: true
+}
+).addTo(map);
+
+//Geolocation
+map.locate({
+    setView: false,
+    maxZoom: 16,
+    watch: true,
+});
+
+let circle = L.circle([0, 0], 0).addTo(map);
+
+map.on('locationfound', function (evt) {
+    let radius = Math.round(evt.accuracy);
+    L.circle(evt.latlng, radius).addTo(map);
+    circle.setLatLng(evt.latlng);
+    circle.setRadius(radius);
+}
+);
+
+map.on('locationerror', function (evt) {
+    alert(evt.message);
+});
+
+// Wettervorhersage MET Norway
+async function showForecast(url, latlng) {
+    let response = await fetch(url);
+    let jsondata = await response.json();
+
+    let current = jsondata.properties.timeseries[0].data.instant.details;
+
+    let timestamp = new Date(jsondata.properties.meta.updated_at).toLocaleString();
+
+    let timeseries = jsondata.properties.timeseries;
+
+    let markup = `
+        <h4>Wetter für ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)} (${timestamp})</h4>
+        <table>
+            <tr><td>Lufttemperatur (C)</td><td>${current.air_temperature}</td></tr>
+            <tr><td>Bewölkungsgrad (%)</td><td>${current.cloud_area_fraction}</td></tr>
+            <tr><td>Luftfeuchtigkeit (%)</td><td>${current.relative_humidity}</td></tr>
+            <tr><td>Windrichtung (°)</td><td>${current.wind_from_direction}</td></tr>
+            <tr><td>Windgeschwindigkeit (m/s)</td><td>${current.wind_speed}</td></tr>
+        </table>
+    `;
+
+    // Wettersymbole hinzufügen
+    for (let i = 0; i <= 24; i += 3) {
+        //console.log(timeseries[i]);
+        let icon = timeseries[i].data.next_1_hours.summary.symbol_code;
+        let img = `icons/${icon}.svg`;
+        markup += `<img src="${img}" style="width:32px;" title="${timeseries[i].time.toLocaleString()}">`
+        //console.log(icon, img);
+    }
+    L.popup().setLatLng(latlng).setContent(markup).openOn(themaLayer.forecast);
+}
+
+// Wettervorhersage auf Kartenklick reagieren (Event via map.on)
+map.on("click", function (evt) {
+    console.log(evt);
+    let url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${evt.latlng.lat}&lon=${evt.latlng.lng}`;
+    showForecast(url, evt.latlng);
+});
+
 
 //Festival-Radweg
 var gpx = './data/festival.gpx';
 let festival = new L.GPX(gpx, {
     polyline_options: {
-        color: '#FFFACD',
+        color: '#8D021F',
         opacity: 0.75,
         weight: 3
     },
@@ -54,6 +125,7 @@ let festival = new L.GPX(gpx, {
         wptIconUrls: false
     }
 }).addTo(themaLayer.festival);
+
 // GPX Track visualisieren aus https://raruto.github.io/leaflet-elevation/
 festival.on("click", function (evt) {
     let controlElevation = L.control.elevation({
@@ -67,10 +139,10 @@ festival.on("click", function (evt) {
 });
 
 //Iron-Curtain-Radweg
-var gpx = './data/ironCurta.gpx';
+var gpx = './data/ironCurtain.gpx';
 let ironCurtain = new L.GPX(gpx, {
     polyline_options: {
-        color: '#FFFACD',
+        color: '#CD5C5C',
         opacity: 0.75,
         weight: 3
     },
@@ -97,7 +169,7 @@ ironCurtain.on("click", function (evt) {
 var gpx = './data/jubilaeum.gpx';
 let jubilaeum = new L.GPX(gpx, {
     polyline_options: {
-        color: '#FFFACD',
+        color: '#E0115F',
         opacity: 0.75,
         weight: 3
     },
@@ -120,38 +192,12 @@ jubilaeum.on("click", function (evt) {
     controlElevation.load("./data/jubilaeum.gpx")
 });
 
-//Paradies-Radweg
-var gpx = './data/paradies.gpx';
-let paradies = new L.GPX(gpx, {
-    polyline_options: {
-        color: '#FFFACD',
-        opacity: 0.75,
-        weight: 3
-    },
-    marker_options: {
-        startIconUrl: "icons/tab_cycle.png",
-        endIconUrl: false,
-        shadowUrl: false,
-        wptIconUrls: false
-    }
-}).addTo(themaLayer.paradies);
-// GPX Track visualisieren aus https://raruto.github.io/leaflet-elevation/
-paradies.on("click", function (evt) {
-    let controlElevation = L.control.elevation({
-        time: false,
-        elevationDiv: "#profile",
-        height: 300,
-        theme: "jubilaeum"
-    }).addTo(map);
-    // Load track from url (allowed data types: "*.geojson", "*.gpx", "*.tcx")
-    controlElevation.load("./data/paradies.gpx")
-});
 
-//Jubiläum-Radweg
+//Rosalia-Radweg
 var gpx = './data/rosalia.gpx';
 let rosalia = new L.GPX(gpx, {
     polyline_options: {
-        color: '#FFFACD',
+        color: '#FF0800',
         opacity: 0.75,
         weight: 3
     },
@@ -174,98 +220,32 @@ rosalia.on("click", function (evt) {
     controlElevation.load("./data/rosalia.gpx")
 });
 
-
-var gpx = './data/festival.gpx';
-new L.GPX(gpx, { async: true }, {
-    //Polylinien stylen funktioniert noch nicht, marker ausschalten auch nicht
-    polyline_options: [{
-        color: `#76eec6`,
-        opacity: 0.75,
-        weight: 3
-    }, {
-        color: `#76eec6`,
-        opacity: 0.75,
-        weight: 3
-    }]
-}, {
-    marker_options: {
-        startIconUrl: "icons/tab_cycle.png",
-        endIconUrl: false,
-        shadowUrl: false,
-        wptIconUrls: false
-    },
-}).on('loaded', function (e) {
-    //   map.fitBounds(e.target.getBounds());
-}).addTo(themaLayer.festival);
-
-var gpx = './data/ironCurtain.gpx';
-new L.GPX(gpx, { async: true }, {
-    //Polylinien stylen funktioniert noch nicht, marker ausschalten auch nicht
-    polyline_options: [{
-        color: `#76eec6`,
-        opacity: 0.75,
-        weight: 3
-    }, {
-        color: `#76eec6`,
-        opacity: 0.75,
-        weight: 3
-    }]
-}, {
-    marker_options: {
-        startIconUrl: "icons/tab_cycle.png",
-        endIconUrl: false,
-        shadowUrl: false,
-        wptIconUrls: false
-    },
-}).on('loaded', function (e) {
-    //   map.fitBounds(e.target.getBounds());
-}).addTo(themaLayer.ironCurtain);
-
-var gpx = './data/jubilaeum.gpx';
-new L.GPX(gpx, { async: true }, {
-    //Polylinien stylen funktioniert noch nicht, marker ausschalten auch nicht
-    polyline_options: [{
-        color: `#76eec6`,
-        opacity: 0.75,
-        weight: 3
-    }, {
-        color: `#76eec6`,
-        opacity: 0.75,
-        weight: 3
-    }]
-}, {
-    marker_options: {
-        startIconUrl: "icons/tab_cycle.png",
-        endIconUrl: false,
-        shadowUrl: false,
-        wptIconUrls: false
-    },
-}).on('loaded', function (e) {
-    //   map.fitBounds(e.target.getBounds());
-}).addTo(themaLayer.jubilaeum);
-
+//Paradies-Radweg
 var gpx = './data/paradies.gpx';
-new L.GPX(gpx, { async: true }, {
-    //Polylinien stylen funktioniert noch nicht, marker ausschalten auch nicht
-    polyline_options: [{
-        color: `#76eec6`,
+let paradies = new L.GPX(gpx, {
+    polyline_options: {
+        color: '#FF0800',
         opacity: 0.75,
         weight: 3
-    }, {
-        color: `#76eec6`,
-        opacity: 0.75,
-        weight: 3
-    }]
-}, {
+    },
     marker_options: {
         startIconUrl: "icons/tab_cycle.png",
         endIconUrl: false,
         shadowUrl: false,
         wptIconUrls: false
-    },
-}).on('loaded', function (e) {
-    //   map.fitBounds(e.target.getBounds());
+    }
 }).addTo(themaLayer.paradies);
+// GPX Track visualisieren aus https://raruto.github.io/leaflet-elevation/
+paradies.on("click", function (evt) {
+    let controlElevation = L.control.elevation({
+        time: false,
+        elevationDiv: "#profile",
+        height: 300,
+        theme: "paradies"
+    }).addTo(map);
+    // Load track from url (allowed data types: "*.geojson", "*.gpx", "*.tcx")
+    controlElevation.load("./data/paradies.gpx")
+});
 
 // Marker der größten Städte
 const STAEDTE = [
@@ -351,115 +331,7 @@ L.control.scale({
     imperial: false,
 }).addTo(map);
 
-// Instanz Leaflet MiniMap
-var miniMap = new L.Control.MiniMap(
-    L.tileLayer.provider("BasemapAT.basemap"), {
-    toggleDisplay: true,
-    minimized: true
-}
-).addTo(map);
 
-// Erstelle eine Basiskarten-Layer (z.B. OpenStreetMap)
-var osm2 = new L.TileLayer(osmUrl, {
-    minZoom: 0,
-    maxZoom: 13,
-    attribution: osmAttrib
-});
-
-// Füge die Basiskarte zur Karte hinzu
-osm2.addTo(map);
-
-// Erstelle eine Instanz der Minimap
-var miniMap = new L.Control.MiniMap(osm2, {
-    position: 'bottomright', // Positioniere die Minimap unten rechts
-    width: '150px',
-    height: '150px',
-    toggleDisplay: true,
-    zoomLevelOffset: -5
-});
-
-// Füge die Minimap zur Karte hinzu
-miniMap.addTo(map);
-
-//Geolocation
-map.locate({
-    setView: false,
-    maxZoom: 16,
-    watch: true,
-});
-
-let circle = L.circle([0, 0], 0).addTo(map);
-
-map.on('locationfound', function (evt) {
-    let radius = Math.round(evt.accuracy);
-    L.circle(evt.latlng, radius).addTo(map);
-    circle.setLatLng(evt.latlng);
-    circle.setRadius(radius);
-}
-);
-
-var errorDisplayed = false;
-
-map.on('locationerror', function (evt) {
-    if (!errorDisplayed) {
-        alert(evt.message);
-        errorDisplayed = true;
-    }
-});
-
-// //GPX-Track visualisieren -> Höhenprofile (es sind noch nicht alle)
-// let controlElevation = L.control.elevation({
-//     time: false,
-//     elevationDiv: "#profile",
-//     height: 300,
-//     theme: "Radtouren Niederösterreich"
-// }).addTo(themaLayer.route);
-// controlElevation.load("data/niederoesterreich/piestingtal.gpx");
-
-// //GPX-Track visualisieren
-// let controlElevation1 = L.control.elevation({
-//     time: false,
-//     elevationDiv: "#profile",
-//     height: 300,
-//     theme: "Radtouren Niederösterreich"
-// }).addTo(themaLayer.route);
-// controlElevation1.load("data/niederoesterreich/kamp_thaya_march.gpx")
-
-// //GPX-Track visualisieren
-// let controlElevation2 = L.control.elevation({
-//     time: false,
-//     elevationDiv: "#profile",
-//     height: 300,
-//     theme: "Radtouren Niederösterreich"
-// }).addTo(themaLayer.route);
-// controlElevation2.load("data/niederoesterreich/thayarunde.gpx")
-
-// //GPX-Track visualisieren
-// let controlElevation3 = L.control.elevation({
-//     time: false,
-//     elevationDiv: "#profile",
-//     height: 300,
-//     theme: "Radtouren Niederösterreich"
-// }).addTo(themaLayer.route);
-// controlElevation3.load("data/niederoesterreich/traisentalweg.gpx")
-
-// //GPX-Track visualisieren
-// let controlElevation4 = L.control.elevation({
-//     time: false,
-//     elevationDiv: "#profile",
-//     height: 300,
-//     theme: "Radtouren Niederösterreich"
-// }).addTo(themaLayer.route);
-// controlElevation4.load("triesting_goelsental.gpx")
-
-// //GPX-Track visualisieren
-// let controlElevation5 = L.control.elevation({
-//     time: false,
-//     elevationDiv: "#profile",
-//     height: 300,
-//     theme: "Radtouren Niederösterreich"
-// }).addTo(themaLayer.route);
-// controlElevation5.load("data/niederoesterreich/traisentalweg.gpx")
 
 //Kommentare aus der start-Seite
 /* Pulldownmenü Code
