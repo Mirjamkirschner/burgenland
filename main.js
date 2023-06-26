@@ -1,15 +1,14 @@
 // Zentrum Karte Objekt
-let stpolten = {
-    lat: 48.33001133291213,
-    lng: 16.060959034595086,
-    title: "St. Pölten, Niederösterreich"
+let steinberg = {
+    lat: 47.4744090679682,
+    lng: 16.487984334978034,
 }
 
 // Karte initialisieren und Fullscreen Control 
 let map = L.map("map", {
     fullscreenControl: true
 }).setView([
-    stpolten.lat, stpolten.lng
+    steinberg.lat, steinberg.lng
 ], 8.5);
 
 // thematische Layer
