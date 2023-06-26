@@ -54,10 +54,11 @@ new L.GPX(gpx, { async: true }, {
     }]
 }, {
     marker_options: {
-        startIconUrl: false,
+        startIconUrl: "icons/tab_cycle.png",
         endIconUrl: false,
-        shadowUrl: false
-    }
+        shadowUrl: false,
+        wptIconUrls: false
+    },
 }).on('loaded', function (e) {
     //   map.fitBounds(e.target.getBounds());
 }).addTo(themaLayer.rosalia);
@@ -76,10 +77,11 @@ new L.GPX(gpx, { async: true }, {
     }]
 }, {
     marker_options: {
-        startIconUrl: false,
+        startIconUrl: "icons/tab_cycle.png",
         endIconUrl: false,
-        shadowUrl: false
-    }
+        shadowUrl: false,
+        wptIconUrls: false
+    },
 }).on('loaded', function (e) {
     //   map.fitBounds(e.target.getBounds());
 }).addTo(themaLayer.festival);
@@ -98,10 +100,11 @@ new L.GPX(gpx, { async: true }, {
     }]
 }, {
     marker_options: {
-        startIconUrl: false,
+        startIconUrl: "icons/tab_cycle.png",
         endIconUrl: false,
-        shadowUrl: false
-    }
+        shadowUrl: false,
+        wptIconUrls: false
+    },
 }).on('loaded', function (e) {
     //   map.fitBounds(e.target.getBounds());
 }).addTo(themaLayer.ironCurtain);
@@ -120,10 +123,11 @@ new L.GPX(gpx, { async: true }, {
     }]
 }, {
     marker_options: {
-        startIconUrl: false,
+        startIconUrl: "icons/tab_cycle.png",
         endIconUrl: false,
-        shadowUrl: false
-    }
+        shadowUrl: false,
+        wptIconUrls: false
+    },
 }).on('loaded', function (e) {
     //   map.fitBounds(e.target.getBounds());
 }).addTo(themaLayer.jubilaeum);
@@ -142,43 +146,14 @@ new L.GPX(gpx, { async: true }, {
     }]
 }, {
     marker_options: {
-        startIconUrl: false,
+        startIconUrl: "icons/tab_cycle.png",
         endIconUrl: false,
-        shadowUrl: false
-    }
+        shadowUrl: false,
+        wptIconUrls: false
+    },
 }).on('loaded', function (e) {
     //   map.fitBounds(e.target.getBounds());
 }).addTo(themaLayer.paradies);
-
-var gpx = './data/niederoesterreich/piestingtal.gpx';
-new L.GPX(gpx, { async: true }).on('loaded', function (e) {
-    //   map.fitBounds(e.target.getBounds());
-}).addTo(themaLayer.piestingtal);
-
-var gpx = './data/niederoesterreich/thayarunde.gpx';
-new L.GPX(gpx, { async: true }).on('loaded', function (e) {
-    //   map.fitBounds(e.target.getBounds());
-}).addTo(themaLayer.thayarunde);
-
-var gpx = './data/niederoesterreich/traisentalweg.gpx';
-new L.GPX(gpx, { async: true }).on('loaded', function (e) {
-    //   map.fitBounds(e.target.getBounds());
-}).addTo(themaLayer.traisental);
-
-var gpx = './data/niederoesterreich/triesting_goelsental.gpx';
-new L.GPX(gpx, { async: true }).on('loaded', function (e) {
-    //   map.fitBounds(e.target.getBounds());
-}).addTo(themaLayer.triestingGoelsental);
-
-var gpx = './data/niederoesterreich/triestingau.gpx';
-new L.GPX(gpx, { async: true }).on('loaded', function (e) {
-    //   map.fitBounds(e.target.getBounds());
-}).addTo(themaLayer.triestingau);
-
-var gpx = './data/niederoesterreich/ybbstalradweg.gpx';
-new L.GPX(gpx, { async: true }).on('loaded', function (e) {
-    //   map.fitBounds(e.target.getBounds());
-}).addTo(themaLayer.ybbstal);
 
 // Marker der größten Städte
 const STAEDTE = [
@@ -196,7 +171,7 @@ const STAEDTE = [
     },
     {
         title: "Oberwart",
-        lat:47.29477213220548,
+        lat: 47.29477213220548,
         lng: 16.200854006181853,
         wikipedia: "https://de.wikipedia.org/wiki/Oberwart"//Links raus oder anpassen?
     },
@@ -220,28 +195,28 @@ for (let stadt of STAEDTE) {
 //Badeseen
 const BADESEEN = [
     {
-        title: "Neusiedler See", 
+        title: "Neusiedler See",
         lat: 47.861670077756585,
         lng: 16.766234356776703
     },
     {
-        title: "Römersee", 
+        title: "Römersee",
         lat: 47.76228947258584,
         lng: 16.346584741278356
     },
     {
-        title: "Badeparadies Burg", 
+        title: "Badeparadies Burg",
         lat: 47.21698496322752,
         lng: 16.41073338918724
     },
     {
-        title: "Naturbadesee Königsdorf", 
+        title: "Naturbadesee Königsdorf",
         lat: 47.00899491536701,
         lng: 16.16288813573165
     },
     {
-        title: "Sonnensee Ritzing", 
-        lat: 47.63005232247246, 
+        title: "Sonnensee Ritzing",
+        lat: 47.63005232247246,
         lng: 16.470865861482007
     }
 ];
