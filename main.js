@@ -331,6 +331,48 @@ for (let badeseen of BADESEEN) {
     `)
 };
 
+//Badeseen
+const EISDIELEN = [
+    {
+        title: "Neusiedler See",
+        lat: 47.861670077756585,
+        lng: 16.766234356776703
+    },
+    {
+        title: "Römersee",
+        lat: 47.76228947258584,
+        lng: 16.346584741278356
+    },
+    {
+        title: "Badeparadies Burg",
+        lat: 47.21698496322752,
+        lng: 16.41073338918724
+    },
+    {
+        title: "Naturbadesee Königsdorf",
+        lat: 47.00899491536701,
+        lng: 16.16288813573165
+    },
+    {
+        title: "Sonnensee Ritzing",
+        lat: 47.63005232247246,
+        lng: 16.470865861482007
+    }
+];
+
+for (let eisdielen of EISDIELEN) {
+    L.marker([eisdielen.lat, eisdielen.lng], {
+        icon: L.icon({
+            iconUrl: `icons/icecream.png`,
+            popupAnchor: [0, -37],
+            iconAnchor: [16, 37],
+        })
+    })
+        .addTo(themaLayer.badeseen)
+        .bindPopup(`<b>${badeseen.title}</b> <br>
+    `)
+};
+
 // Maßstab
 L.control.scale({
     imperial: false,
